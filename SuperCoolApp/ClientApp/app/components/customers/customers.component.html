@@ -1,0 +1,24 @@
+<h1>Customers List</h1>
+
+<p *ngIf="!students"><em>Loading...</em></p>
+
+<table class='table' *ngIf="customers">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Last Name</th>
+            <th>Birth Date</th>
+            <th>Address</th>
+            <th>Owned Vehicles</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let customer of customers">
+            <td>{{ customer.name }}</td>
+            <td>{{ customer.lastName }}</td>
+            <td>{{ customer.birthDate }}</td>
+            <td>{{ customer.address }}</td>
+            <td>{{ student.ownedVehicles }}</td>
+        </tr>
+    </tbody>
+</table>
