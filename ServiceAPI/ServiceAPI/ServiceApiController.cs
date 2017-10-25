@@ -179,7 +179,7 @@ namespace ServiceAPI
         public List<User> GetMostPopularVehicles([FromQuery] string brand, int dimensione)
         {
             using (var context = new UsersDbContext()) {
-                List<User> Lista_utenti = (List<User>)context.Users.Where(x => (x.ownedVehicles.Count > dimensione));
+                var Lista_utenti =context.Users.Where(x => (x.ownedVehicles.Count > dimensione)).ToList();
                 if (Lista_utenti != null)
                     return Lista_utenti;
                 else
@@ -191,22 +191,22 @@ namespace ServiceAPI
         [HttpGet("GetBrandVehicles")]
         public List<Vehicle> GetBrandVehicles([FromQuery] string brand) {
             using (var context = new UsersDbContext()) {
-                List<Vehicle> Lista_veicoli = (List<Vehicle>)context.Vehicles.Where(x => x.brand == brand);
-                if (Lista_veicoli != null)
-                    return Lista_veicoli;
-                else
-                    return null;
+                 var lista = context.Vehicles.Where(x => x.brand == brand).ToList();
+                return lista;
+                
             }
 
 
         }
 
+       
         //Geolocalizzazione per indirizzi vicini
         //Iactionresult
         [HttpGet("GeoUsers")]
         public void GetNearestUsers([FromQuery] string indirizzo)
         {
             //Geolocalizzazione per indirizzo.
+            //impossibile mettere il pacchetto di gmaps...
         }
 
 
@@ -218,7 +218,7 @@ namespace ServiceAPI
                 //intorno di 2000.
                 int limite_superiore = price + intorno;
                 int limite_inferiore = price - intorno;
-                List<Vehicle> list=context.Vehicles.Where(
+                var list=context.Vehicles.Where(
                     x => x.price >= limite_inferiore && x.price <= limite_superiore)
                     .ToList();
                 if (list != null) return list;
@@ -248,6 +248,18 @@ namespace ServiceAPI
                 return Ok();
             }
         }
+        [HttpPut("vehicle")]
+        public async Task<IActionResult> CreateVehicle([FromBody]Vehicle vehicle)
+        {
+            using (var context = new UsersDbContext())
+            {
+                context.Vehicles.Add(vehicle);
+
+                await context.SaveChangesAsync();
+
+                return Ok();
+            }
+        }
 
         [HttpPost("user")]
         public async Task<IActionResult> UpdateUser([FromBody]User user)
@@ -255,6 +267,17 @@ namespace ServiceAPI
             using (var context = new UsersDbContext())
             {
                 context.Users.Update(user);
+                await context.SaveChangesAsync();
+                return Ok();
+            }
+        }
+
+        [HttpPost("vehicle")]
+        public async Task<IActionResult> UpdateVehicle([FromBody]Vehicle vehicle)
+        {
+            using (var context = new UsersDbContext())
+            {
+                context.Vehicles.Update(vehicle);
                 await context.SaveChangesAsync();
                 return Ok();
             }
@@ -268,6 +291,19 @@ namespace ServiceAPI
             {
                 var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
                 context.Users.Remove(user);
+                await context.SaveChangesAsync();
+                return Ok();
+
+
+            }
+        }
+        [HttpDelete("vehicle")]
+        public async Task<IActionResult> DeleteVehicle([FromQuery]int id)
+        {
+            using (var context = new UsersDbContext())
+            {
+                var vehicle = await context.Vehicles.FirstOrDefaultAsync(x => x.id == id);
+                context.Vehicles.Remove(vehicle);
                 await context.SaveChangesAsync();
                 return Ok();
 
