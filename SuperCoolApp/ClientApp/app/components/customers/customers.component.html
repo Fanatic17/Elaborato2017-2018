@@ -1,6 +1,6 @@
 <h1>Customers List</h1>
 
-<p *ngIf="!students"><em>Loading...</em></p>
+<p *ngIf="!customers"><em>Loading...</em></p>
 
 <table class='table' *ngIf="customers">
     <thead>
@@ -18,7 +18,7 @@
             <td>{{ customer.lastName }}</td>
             <td>{{ customer.birthDate }}</td>
             <td>{{ customer.address }}</td>
-            <td>{{ student.ownedVehicles }}</td>
+            <td>{{ customer.ownedVehicles }}</td>
         </tr>
     </tbody>
 </table>
