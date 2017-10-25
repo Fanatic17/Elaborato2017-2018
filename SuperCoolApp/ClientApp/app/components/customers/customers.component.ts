@@ -17,5 +17,8 @@ export class CustomersComponent {
 
 interface Customer {
     name: string;
-    dateOfBirth: Date;
+	lastName: string;
+    birthDate: Date;
+	address: string;
+	ownedVehicles: string; //expansion: create vehicle object and make this a vehicle array
 }
