@@ -153,6 +153,28 @@ namespace ServiceAPI
             }
         }
 
+        [HttpGet("admins")]
+        public List<User> GetAdmins()
+        {
+            using (var context = new UsersDbContext())
+            {
+                var lista = context.Users.Where(x => x.isAdmin == true).ToList();
+                if (lista != null) return lista;
+                else return null;
+            }
+        }
+
+        [HttpGet("normalUsers")]
+        public List<User> GetNormalUsers()
+        {
+            using (var context = new UsersDbContext())
+            {
+                var lista = context.Users.Where(x => x.isAdmin == false).ToList();
+                if (lista != null) return lista;
+                else return null;
+            }
+        }
+
         [HttpGet("userwsurname")]
         public async Task<IActionResult> GetUserwSurname([FromQuery]string surname)
         {
