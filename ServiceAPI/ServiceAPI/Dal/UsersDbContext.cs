@@ -5,7 +5,7 @@ namespace ServiceAPI.Dal
     public class UsersDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-
+        public DbSet<Vehicle> Vehicles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder

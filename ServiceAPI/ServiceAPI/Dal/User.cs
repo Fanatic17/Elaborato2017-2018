@@ -11,7 +11,7 @@ namespace ServiceAPI.Dal
         public string lastName { get; set; }
         public DateTime birthDate { get; set; }
         public string address { get; set; }
-        public string ownedVehicles { get; set; }
+        public List<Vehicle> ownedVehicles { get; set; }
         public bool isAdmin { get; set; }
     }
 }

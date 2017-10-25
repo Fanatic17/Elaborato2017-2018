@@ -149,7 +149,7 @@ namespace ServiceAPI
         {
             using (var context = new UsersDbContext())
             {
-                return Ok(await context.Users.FirstOrDefaultAsync(x =>x.name==name));
+                return Ok(await context.Users.FirstOrDefaultAsync(x => x.name == name));
             }
         }
 
@@ -174,7 +174,59 @@ namespace ServiceAPI
                 else return null;
             }
         }
+        //Get Most spendaccioni users.
+        [HttpGet("getmostownedvehicles")]
+        public List<User> GetMostPopularVehicles([FromQuery] string brand, int dimensione)
+        {
+            using (var context = new UsersDbContext()) {
+                List<User> Lista_utenti = (List<User>)context.Users.Where(x => (x.ownedVehicles.Count > dimensione));
+                if (Lista_utenti != null)
+                    return Lista_utenti;
+                else
+                    return null;
 
+            }
+        }
+        //Get all vehicle with a specified brand
+        [HttpGet("GetBrandVehicles")]
+        public List<Vehicle> GetBrandVehicles([FromQuery] string brand) {
+            using (var context = new UsersDbContext()) {
+                List<Vehicle> Lista_veicoli = (List<Vehicle>)context.Vehicles.Where(x => x.brand == brand);
+                if (Lista_veicoli != null)
+                    return Lista_veicoli;
+                else
+                    return null;
+            }
+
+
+        }
+
+        //Geolocalizzazione per indirizzi vicini
+        //Iactionresult
+        [HttpGet("GeoUsers")]
+        public void GetNearestUsers([FromQuery] string indirizzo)
+        {
+            //Geolocalizzazione per indirizzo.
+        }
+
+
+        //Get all near prices about a main price
+        [HttpGet("nearestprices")]
+        public List<Vehicle> GetPriceVehicles([FromQuery]int price,int intorno) {
+                using(var context=new UsersDbContext())
+            {
+                //intorno di 2000.
+                int limite_superiore = price + intorno;
+                int limite_inferiore = price - intorno;
+                List<Vehicle> list=context.Vehicles.Where(
+                    x => x.price >= limite_inferiore && x.price <= limite_superiore)
+                    .ToList();
+                if (list != null) return list;
+                else return null;
+            }
+        }
+
+        //Find user from his sunrmae
         [HttpGet("userwsurname")]
         public async Task<IActionResult> GetUserwSurname([FromQuery]string surname)
         {

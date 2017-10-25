@@ -6,6 +6,7 @@ namespace ServiceAPI.Dal
 {
     public class Vehicle
     {
+        public int id { get; set; }
         public string brand { get; set; }
         public string model { get; set; }
         public string plate { get; set; }
