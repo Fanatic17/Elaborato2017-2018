@@ -106,7 +106,7 @@ namespace ServiceAPI
         {
             lock (setupLock)
             {
-                using (var context = new CustomerDbContext())
+                using (var context = new UsersDbContext())
                 {
                     // Create database
                     context.Database.EnsureCreated();
@@ -116,16 +116,17 @@ namespace ServiceAPI
         }
 
 
-        [HttpGet("customers")]
-        public async Task<IActionResult> GetCustomers()
+
+        [HttpGet("users")]
+        public async Task<IActionResult> GetUsers()
         {
             try
             {
                 await parallelism.WaitAsync();
 
-                using (var context = new CustomerDbContext())
+                using (var context = new UsersDbContext())
                 {
-                    return Ok(await context.Customers.ToListAsync());
+                    return Ok(await context.Users.ToListAsync());
                 }
             }
             finally
@@ -134,21 +135,39 @@ namespace ServiceAPI
             }
         }
 
-        [HttpGet("customer")]
-        public async Task<IActionResult> GetCustomer([FromQuery]int id)
+        [HttpGet("user")]
+        public async Task<IActionResult> GetUser([FromQuery]int id)
         {
-            using (var context = new CustomerDbContext())
+            using (var context = new UsersDbContext())
             {
-                return Ok(await context.Customers.FirstOrDefaultAsync(x => x.Id == id));
+                return Ok(await context.Users.FirstOrDefaultAsync(x => x.Id == id));
             }
         }
 
-        [HttpPut("customer")]
-        public async Task<IActionResult> CreateCustomer([FromBody]Customer customer)
+        [HttpGet("userwname")]
+        public async Task<IActionResult> GetUserwName([FromQuery]string name)
         {
-            using (var context = new CustomerDbContext())
+            using (var context = new UsersDbContext())
             {
-                context.Customers.Add(customer);
+                return Ok(await context.Users.FirstOrDefaultAsync(x =>x.name==name));
+            }
+        }
+
+        [HttpGet("userwsurname")]
+        public async Task<IActionResult> GetUserwSurname([FromQuery]string surname)
+        {
+            using (var context = new UsersDbContext())
+            {
+                return Ok(await context.Users.FirstOrDefaultAsync(x => x.lastName == surname));
+            }
+        }
+
+        [HttpPut("user")]
+        public async Task<IActionResult> CreateUser([FromBody]User user)
+        {
+            using (var context = new UsersDbContext())
+            {
+                context.Users.Add(user);
 
                 await context.SaveChangesAsync();
 
@@ -156,25 +175,25 @@ namespace ServiceAPI
             }
         }
 
-        [HttpPost("customers")]
-        public async Task<IActionResult> UpdateCustomer([FromBody]Customer customer)
+        [HttpPost("user")]
+        public async Task<IActionResult> UpdateUser([FromBody]User user)
         {
-            using (var context = new CustomerDbContext())
+            using (var context = new UsersDbContext())
             {
-                context.Customers.Update(customer);
+                context.Users.Update(user);
                 await context.SaveChangesAsync();
                 return Ok();
             }
         }
 
 
-        [HttpDelete("customer")]
-        public async Task<IActionResult> DeleteCustomer([FromQuery]int id)
+        [HttpDelete("user")]
+        public async Task<IActionResult> DeleteUser([FromQuery]int id)
         {
-            using (var context = new CustomerDbContext())
+            using (var context = new UsersDbContext())
             {
-                var customer = await context.Customers.FirstOrDefaultAsync(x => x.Id == id);
-                context.Customers.Remove(customer);
+                var user = await context.Users.FirstOrDefaultAsync(x => x.Id == id);
+                context.Users.Remove(user);
                 await context.SaveChangesAsync();
                 return Ok();
 

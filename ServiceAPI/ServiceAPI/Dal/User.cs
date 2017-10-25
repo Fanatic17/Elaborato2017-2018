@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ServiceAPI.Dal
 {
-    public class Customer
+    public class User
     {
         public int Id { get; set; }
         public string name { get; set; }
@@ -12,6 +12,6 @@ namespace ServiceAPI.Dal
         public DateTime birthDate { get; set; }
         public string address { get; set; }
         public string ownedVehicles { get; set; }
-
+        public bool isAdmin { get; set; }
     }
 }
