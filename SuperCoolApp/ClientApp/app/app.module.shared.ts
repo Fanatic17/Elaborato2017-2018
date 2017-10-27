@@ -8,7 +8,9 @@ import { AppComponent } from './components/app/app.component';
 import { NavMenuComponent } from './components/navmenu/navmenu.component';
 import { HomeComponent } from './components/home/home.component';
 import { StudentsComponent } from './components/students/students.component';
-import { CustomersComponent } from './components/customers/customers.component';
+import { UsersComponent } from './components/users/users.component';
+import { VehiclesComponent } from './components/vehicles/vehicles.component';
+
 
 @NgModule({
     declarations: [
@@ -16,7 +18,8 @@ import { CustomersComponent } from './components/customers/customers.component';
         NavMenuComponent,
         HomeComponent,
         StudentsComponent,
-		CustomersComponent
+		UsersComponent,
+		VehiclesComponent
     ],
     imports: [
         CommonModule,
@@ -26,7 +29,8 @@ import { CustomersComponent } from './components/customers/customers.component';
             { path: '', redirectTo: 'home', pathMatch: 'full' },
             { path: 'home', component: HomeComponent },
             { path: 'students', component: StudentsComponent },
-			{ path: 'customers', component: CustomersComponent },
+			{ path: 'users', component: UsersComponent },
+			{ path: 'vehicles', component: VehiclesComponent },
             { path: '**', redirectTo: 'home' }
         ])
     ]

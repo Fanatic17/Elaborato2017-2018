@@ -16,8 +16,9 @@ export class VehiclesComponent {
 }
 
 interface Vehicle {
+    id: string;
+	brand: string;
     model: string;
-	manufacturer: string;
-    productionDate: Date;
-	optionals: string;
+	plate: string;
+	price: string;
 }

@@ -5,18 +5,20 @@
 <table class='table' *ngIf="vehicles">
     <thead>
         <tr>
-            <th>Model</th>
-            <th>Manufacturer</th>
-            <th>Date of production</th> 
-            <th>List of optionals</th>
+            <th>Id</th>
+            <th>Brand</th>
+            <th>Model</th> 
+            <th>Plate</th>
+            <th>Price</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let vehicle of vehicles">
-            <td>{{ vehicle.name }}</td>
-            <td>{{ vehicle.manufacturer }}</td>
-            <td>{{ vehicle.productionDate }}</td>
-            <td>{{ vehicle.optionals }}</td>
+            <td>{{ vehicle.id }}</td>
+            <td>{{ vehicle.brand }}</td>
+            <td>{{ vehicle.model }}</td>
+            <td>{{ vehicle.plate }}</td>
+            <td>{{ vehicle.price }}</td>
         </tr>
     </tbody>
 </table>
