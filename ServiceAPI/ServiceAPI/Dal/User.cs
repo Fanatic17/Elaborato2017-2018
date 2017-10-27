@@ -6,7 +6,7 @@ namespace ServiceAPI.Dal
 {
     public class User
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string name { get; set; }
         public string lastName { get; set; }
         public DateTime birthDate { get; set; }

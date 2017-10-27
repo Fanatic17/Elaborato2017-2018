@@ -18,12 +18,7 @@ namespace ServiceAPI
                 .Build();
 
             Task restService = host.RunAsync();
-            //Setupmongodb
-            //ServiceApiControllerwMongo p = new ServiceApiControllerwMongo();
-
-
             //System.Diagnostics.Process.Start("chrome.exe", "http://localhost/netcoreapp2.0/corsoing/");
-            System.Diagnostics.Process.Start("cmd", "/C start http://localhost/netcoreapp2.0/corsoing/");
             restService.Wait();
 
         }

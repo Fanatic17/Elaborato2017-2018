@@ -17,89 +17,203 @@ namespace ServiceAPI
     [Route("api")]
     public class ServiceApiController : Controller
     {
-        //Mongo
-        //MongoClient client;
-
-        //public ServiceApiController()
-        //{
-        //    //Mongo
-        //client = new MongoClient("mongodb://localhost:27017");
-        //SetupDatabasewMongo();
-        //SetupCollectionswMongo();
-        //}
-
         static readonly object setupLock = new object();
         static readonly SemaphoreSlim parallelism = new SemaphoreSlim(2);
 
 
-        //MONGO----------------------------------------------
-        //MONGO----------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //--------------------MONGO APIs------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        [HttpGet("setupmongo")]
+        public IActionResult SetupDBMongo()
+        {
+            lock (setupLock)
+            {
+                using (var context = new MongoDBContext())
+                {
+                    // Create database
+                    context.Database.EnsureCreated();
+                }
+                return Ok("database created");
+            }
 
-        //public void SetupDatabasewMongo()
-        //{
+        }
 
-        //    var create_db = client.GetDatabase("Concessionario");
+        //Get all Users in mongoDB
+        [HttpGet("mongo/users")]
+        public IActionResult GetAllUsers()
+        {
+            MongoDBContext dBContext = new MongoDBContext();
 
-        //}
-        //public void SetupCollectionswMongo()
-        //{
+                List<User> userList = dBContext.Users.Find(x => true).ToList();
+
+            return View(userList);
+        }
+
+       
+        //Get total amount per specified user.
+        [HttpGet("user/totalamount")]
+        public IActionResult GetTotalAmountForaSpecifiedUser([FromQuery] string name,[FromQuery] string lastname) {
+            int somma = 0;
+            MongoDBContext dBContext = new MongoDBContext();
+            var entity = dBContext.Users.Find(m => m.name == name && m.lastName==lastname).FirstOrDefault();
+            foreach (var item in entity.ownedVehicles.Where(c => c.price != 0)) {
+                somma = somma + item.price;
+            }
+            return View(somma);
+
+        }
+
+       
+        //Put a new user.
+        [HttpPut("mongo/user")]
+        public  IActionResult InsertUserMongo(User entity)
+        {
+            MongoDBContext dbContext = new MongoDBContext();
+            entity.Id = Guid.NewGuid();
+            dbContext.Users.InsertOne(entity);
+            dbContext.SaveChanges();
+            return View(entity);
+        }
 
 
-        //    if (client.GetDatabase("Concessionario").GetCollection<Customer>("customers") == null)
-        //    {
-        //        client.GetDatabase("Concessionario").CreateCollection("customers");
-        //        GetExampleListCustomer();
-        //    }
+        //Delete user w Mongo
+        [HttpDelete("user")]
+        public IActionResult DeleteUser(Guid id)
+        {
+            MongoDBContext dbContext = new MongoDBContext();
+            dbContext.Users.DeleteOne(m => m.Id == id);
+            return Redirect("/");
+        }
 
-        //    if (client.GetDatabase("Concessionario").GetCollection<Vehicle>("vehicles") == null)
-        //    {
-        //        client.GetDatabase("Concessionario").CreateCollection("vehicles");
-        //        //Mettere la lista di esempio
-        //    }
+        //Admins
+        [HttpGet("user/admins")]
+        public IActionResult GetAdmins()
+        {
+            MongoDBContext dBcontext = new MongoDBContext();
+            var lista = dBcontext.Users.Find(x => x.isAdmin == true).ToList();
+            return View(lista);
+            
+        }
 
-        //}
-        //public void GetExampleListCustomer()
-        //{
-        //    var collection_cust = client.GetDatabase("Concessionario").GetCollection<Customer>("customers");
-        //    string[] array_nomi = new string[] { "Marco", "Simone", "Emanuele", "Niccolo", "Giovanni", "Riccardo", "Antonio", "Silvio" };
-        //    string[] array_cognomi = new string[] { "Consoli", "Aquino", "GIoele", "Andronaco", "Franata", "Stuppia", "Pappone", "Cerullo" };
 
-        //    for (int i = 0; i < 7; i++)
-        //    {
-        //        Customer p = new Customer();
-        //        p.name = array_nomi[i];
-        //        p.lastName = array_cognomi[i];
-        //        p.birthDate = new DateTime();
-        //        p.address = array_nomi[i] + array_cognomi[i];
-        //        p.ownedVehicles = "";
-        //    }
-        //}
-        //[HttpGet("setup")]
-        //public IActionResult SetupDB()
-        //{
-        //    var create_db = client.GetDatabase("Concessionario");
-        //    if (create_db != null) return Ok();
-        //    else return null;
-        //}
-        //[HttpGet("customers")]
-        //public IMongoCollection<Customer> GetAllCustomers()
-        //{
-        //    var collections = client.GetDatabase("Concessionario").GetCollection<Customer>("customer");
+        //Normal Users
+        [HttpGet("user/normalusers")]
+        public IActionResult GetNormalUsers()
+        {
+            MongoDBContext dBcontext = new MongoDBContext();
+            var lista = dBcontext.Users.Find(x => x.isAdmin == false).ToList();
+            return View(lista);
 
-        //    return collections;
-        //}
-        //[HttpGet("vehicles")]
-        //public IMongoCollection<Vehicle> GetAllVehicles()
-        //{
-        //    var collections = client.GetDatabase("Concessionario").GetCollection<Vehicle>("vehicle");
-        //    return collections;
-        //}
+        }
 
+
+        //ModifyUser w Mongo
+        [HttpPost("mongo/user")]
+        public IActionResult ModifyUser(User user) {
+            MongoDBContext dBContext = new MongoDBContext();
+            dBContext.Users.ReplaceOne(m => m.Id == user.Id, user);
+            return View(user);
+        }
+
+        //Find users that have already 1 or more vehicles
+        [HttpGet("user/withmanyvehicles")]
+        public IActionResult FindUsersWithVehicles() {
+            List<User> u = new List<User>();
+            MongoDBContext dBContext = new MongoDBContext();
+            var item = dBContext.Users.Find(x => x.ownedVehicles.Count > 1).ToList();
+            return View(item);
+         }
+
+
+        //Get all vehicles.
+        [HttpGet("mongo/vehicles")]
+        public IActionResult GetAllVehicles()
+        {
+            MongoDBContext dBContext = new MongoDBContext();
+
+            List<Vehicle> vehicleList = dBContext.Vehicles.Find(x => true).ToList();
+
+            return View(vehicleList);
+        }
+
+
+        //Put a new vehicle.
+        [HttpPut("mongo/vehicle")]
+        public IActionResult InsertNewVehicle(Vehicle entity)
+        {
+            MongoDBContext dbContext = new MongoDBContext();
+            entity.Id = Guid.NewGuid();
+            dbContext.Vehicles.InsertOne(entity);
+            dbContext.SaveChanges();
+            return View(entity);
+        }
+
+
+        //Get all Vehicles in mongoDB
+        [HttpGet("mongo/vehicles")]
+        public IActionResult GetAllVehiclesMongo()
+        {
+            MongoDBContext dBContext = new MongoDBContext();
+
+            List<Vehicle> vehicleList = dBContext.Vehicles.Find(x => true).ToList();
+
+            return View(vehicleList);
+        }
+
+        //Modify Vehicle w Mongo
+        [HttpPost("mongo/vehicle")]
+        public IActionResult ModifyVehicle(Vehicle vehicle)
+        {
+            MongoDBContext dBContext = new MongoDBContext();
+            dBContext.Vehicles.ReplaceOne(m => m.Id == vehicle.Id, vehicle);
+            return View(vehicle);
+        }
+
+
+        //Delete Vehicle w Mongo
+        [HttpDelete("vehicle")]
+        public IActionResult Delete(Guid id)
+        {
+            MongoDBContext dbContext = new MongoDBContext();
+            dbContext.Vehicles.DeleteOne(m => m.Id == id);
+            return Redirect("/");
+        }
+
+        //Working ON
+        //-----------------------------------------
+        //-----------------------------------------
+        [HttpGet("findusersxvehicleprice")]
+        public IActionResult FindUsersWithPrice([FromQuery] int price, int intorno)
+        {
+            int limite_inferiore = price - intorno;
+            int limite_superiore = price + intorno;
+            List<User> u = new List<User>();
+            MongoDBContext dBContext = new MongoDBContext();
+            return Ok();
+        }
+
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //---------------------------MySQL APIs-------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
+        //------------------------------------------------------------------
         //------------------------------------------------------------------
         //------------------------------------------------------------------
 
 
-        //MYSQL MYSQL MYSQL
+        
 
         [HttpGet("setup")]
         public IActionResult SetupDatabase()
@@ -136,11 +250,11 @@ namespace ServiceAPI
         }
 
         [HttpGet("user")]
-        public async Task<IActionResult> GetUser([FromQuery]int id)
+        public async Task<IActionResult> GetUser([FromQuery]Guid id)
         {
             using (var context = new UsersDbContext())
             {
-                return Ok(await context.Users.FirstOrDefaultAsync(x => x.Id == id));
+                return Ok(await context.Users.FirstOrDefaultAsync(x => x.Id==id));
             }
         }
 
@@ -154,7 +268,7 @@ namespace ServiceAPI
         }
 
         [HttpGet("admins")]
-        public List<User> GetAdmins()
+        public List<User> GetAdminsSql()
         {
             using (var context = new UsersDbContext())
             {
@@ -165,7 +279,7 @@ namespace ServiceAPI
         }
 
         [HttpGet("normalUsers")]
-        public List<User> GetNormalUsers()
+        public List<User> GetNormalUsersSql()
         {
             using (var context = new UsersDbContext())
             {
@@ -198,17 +312,6 @@ namespace ServiceAPI
 
 
         }
-
-       
-        //Geolocalizzazione per indirizzi vicini
-        //Iactionresult
-        [HttpGet("GeoUsers")]
-        public void GetNearestUsers([FromQuery] string indirizzo)
-        {
-            //Geolocalizzazione per indirizzo.
-            //impossibile mettere il pacchetto di gmaps...
-        }
-
 
         //Get all near prices about a main price
         [HttpGet("nearestprices")]
@@ -248,6 +351,7 @@ namespace ServiceAPI
                 return Ok();
             }
         }
+
         [HttpPut("vehicle")]
         public async Task<IActionResult> CreateVehicle([FromBody]Vehicle vehicle)
         {
@@ -283,9 +387,8 @@ namespace ServiceAPI
             }
         }
 
-
         [HttpDelete("user")]
-        public async Task<IActionResult> DeleteUser([FromQuery]int id)
+        public async Task<IActionResult> DeleteUserSql([FromQuery]Guid id)
         {
             using (var context = new UsersDbContext())
             {
@@ -297,12 +400,13 @@ namespace ServiceAPI
 
             }
         }
+
         [HttpDelete("vehicle")]
-        public async Task<IActionResult> DeleteVehicle([FromQuery]int id)
+        public async Task<IActionResult> DeleteVehicle([FromQuery]Guid id)
         {
             using (var context = new UsersDbContext())
             {
-                var vehicle = await context.Vehicles.FirstOrDefaultAsync(x => x.id == id);
+                var vehicle = await context.Vehicles.FirstOrDefaultAsync(x => x.Id == id);
                 context.Vehicles.Remove(vehicle);
                 await context.SaveChangesAsync();
                 return Ok();
