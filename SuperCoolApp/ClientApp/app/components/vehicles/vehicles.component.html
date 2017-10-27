@@ -1,0 +1,22 @@
+<h1>Vehicles List</h1>
+
+<p *ngIf="!vehicles"><em>Loading...</em></p>
+
+<table class='table' *ngIf="vehicles">
+    <thead>
+        <tr>
+            <th>Model</th>
+            <th>Manufacturer</th>
+            <th>Date of production</th> 
+            <th>List of optionals</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let vehicle of vehicles">
+            <td>{{ vehicle.name }}</td>
+            <td>{{ vehicle.manufacturer }}</td>
+            <td>{{ vehicle.productionDate }}</td>
+            <td>{{ vehicle.optionals }}</td>
+        </tr>
+    </tbody>
+</table>

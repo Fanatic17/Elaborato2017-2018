@@ -15,7 +15,7 @@ import { CustomersComponent } from './components/customers/customers.component';
         AppComponent,
         NavMenuComponent,
         HomeComponent,
-        StudentsComponent
+        StudentsComponent,
 		CustomersComponent
     ],
     imports: [
