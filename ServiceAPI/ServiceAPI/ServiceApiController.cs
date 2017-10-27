@@ -19,7 +19,7 @@ namespace ServiceAPI
     {
         static readonly object setupLock = new object();
         static readonly SemaphoreSlim parallelism = new SemaphoreSlim(2);
-
+        
 
         //------------------------------------------------------------------
         //------------------------------------------------------------------
@@ -38,7 +38,7 @@ namespace ServiceAPI
                 using (var context = new MongoDBContext())
                 {
                     // Create database
-                    context.Database.EnsureCreated();
+                    context.Database.EnsureCreated();                  
                 }
                 return Ok("database created");
             }
@@ -186,17 +186,24 @@ namespace ServiceAPI
             return Redirect("/");
         }
 
-        //Working ON
-        //-----------------------------------------
-        //-----------------------------------------
-        [HttpGet("findusersxvehicleprice")]
+        //Find all users trough the price of their ownedvehicles.
+        [HttpGet("")]
         public IActionResult FindUsersWithPrice([FromQuery] int price, int intorno)
         {
             int limite_inferiore = price - intorno;
             int limite_superiore = price + intorno;
             List<User> u = new List<User>();
             MongoDBContext dBContext = new MongoDBContext();
-            return Ok();
+
+            foreach (var find_user in dBContext.Users.AsQueryable().
+                                       Where(p => p.ownedVehicles.Any(c => c.price >= limite_inferiore 
+                                       && c.price <= limite_superiore)))
+            {
+                u.Add(find_user);
+            }
+
+            return View(u);
+
         }
 
         //------------------------------------------------------------------
@@ -213,7 +220,7 @@ namespace ServiceAPI
         //------------------------------------------------------------------
 
 
-        
+
 
         [HttpGet("setup")]
         public IActionResult SetupDatabase()
