@@ -274,6 +274,44 @@ namespace ServiceAPI
             }
         }
 
+
+        [HttpGet("vehicles")]
+        public async Task<IActionResult> GetVehicles()
+        {
+            try
+            {
+                await parallelism.WaitAsync();
+
+                using (var context = new UsersDbContext())
+                {
+                    return Ok(await context.Vehicles.ToListAsync());
+                }
+            }
+            finally
+            {
+                parallelism.Release();
+            }
+        }
+
+
+        [HttpGet("students")]
+        public async Task<IActionResult> GetStudents()
+        {
+            try
+            {
+                await parallelism.WaitAsync();
+
+                using (var context = new UsersDbContext())
+                {
+                    return Ok(await context.Students.ToListAsync());
+                }
+            }
+            finally
+            {
+                parallelism.Release();
+            }
+        }
+
         [HttpGet("admins")]
         public List<User> GetAdminsSql()
         {
@@ -358,6 +396,20 @@ namespace ServiceAPI
                 return Ok();
             }
         }
+
+        [HttpPut("student")]
+        public async Task<IActionResult> CreateStudent([FromBody]Student std)
+        {
+            using (var context = new UsersDbContext())
+            {
+                context.Students.Add(std);
+
+                await context.SaveChangesAsync();
+
+                return Ok();
+            }
+        }
+
 
         [HttpPut("vehicle")]
         public async Task<IActionResult> CreateVehicle([FromBody]Vehicle vehicle)
