@@ -294,23 +294,7 @@ namespace ServiceAPI
         }
 
 
-        [HttpGet("students")]
-        public async Task<IActionResult> GetStudents()
-        {
-            try
-            {
-                await parallelism.WaitAsync();
-
-                using (var context = new UsersDbContext())
-                {
-                    return Ok(await context.Students.ToListAsync());
-                }
-            }
-            finally
-            {
-                parallelism.Release();
-            }
-        }
+       
 
         [HttpGet("admins")]
         public List<User> GetAdminsSql()
@@ -384,7 +368,7 @@ namespace ServiceAPI
             }
         }
 
-        [HttpPut("user")]
+        [HttpPut("users")]
         public async Task<IActionResult> CreateUser([FromBody]User user)
         {
             using (var context = new UsersDbContext())
@@ -397,21 +381,10 @@ namespace ServiceAPI
             }
         }
 
-        [HttpPut("student")]
-        public async Task<IActionResult> CreateStudent([FromBody]Student std)
-        {
-            using (var context = new UsersDbContext())
-            {
-                context.Students.Add(std);
-
-                await context.SaveChangesAsync();
-
-                return Ok();
-            }
-        }
+      
 
 
-        [HttpPut("vehicle")]
+        [HttpPut("vehicles")]
         public async Task<IActionResult> CreateVehicle([FromBody]Vehicle vehicle)
         {
             using (var context = new UsersDbContext())
@@ -424,7 +397,7 @@ namespace ServiceAPI
             }
         }
 
-        [HttpPost("user")]
+        [HttpPost("users")]
         public async Task<IActionResult> UpdateUser([FromBody]User user)
         {
             using (var context = new UsersDbContext())
@@ -435,7 +408,7 @@ namespace ServiceAPI
             }
         }
 
-        [HttpPost("vehicle")]
+        [HttpPost("vehicles")]
         public async Task<IActionResult> UpdateVehicle([FromBody]Vehicle vehicle)
         {
             using (var context = new UsersDbContext())
@@ -446,7 +419,7 @@ namespace ServiceAPI
             }
         }
 
-        [HttpDelete("user")]
+        [HttpDelete("users")]
         public async Task<IActionResult> DeleteUserSql([FromQuery]Guid id)
         {
             using (var context = new UsersDbContext())
@@ -460,7 +433,7 @@ namespace ServiceAPI
             }
         }
 
-        [HttpDelete("vehicle")]
+        [HttpDelete("vehicles")]
         public async Task<IActionResult> DeleteVehicle([FromQuery]Guid id)
         {
             using (var context = new UsersDbContext())
