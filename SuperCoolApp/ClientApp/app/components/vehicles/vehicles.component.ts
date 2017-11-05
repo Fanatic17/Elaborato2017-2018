@@ -112,11 +112,12 @@ export class VehiclesComponent {
 
     async saveChanges(): Promise<void> {
         await this.putData();
-        //console.log("update completed");
+        console.log("update completed");
         //await this.refreshData();
     }
 
     delete(vehicle: Vehicle): void {
+        console.log("CIAO");
         vehicle.deleted = true;
         this.selectVehicle();
     }
