@@ -14,6 +14,9 @@ export class UsersComponent {
             this.users = result.json() as User[];
         }, error => console.error(error));
     }
+
+
+
 }
 
 interface User {

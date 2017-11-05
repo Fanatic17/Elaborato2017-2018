@@ -369,10 +369,12 @@ namespace ServiceAPI
         }
 
         [HttpPut("users")]
-        public async Task<IActionResult> CreateUser([FromBody]User user)
+        public async Task<IActionResult> CreateUser(User user)
         {
             using (var context = new UsersDbContext())
             {
+                Guid id = new Guid();
+                user.Id = id;
                 context.Users.Add(user);
 
                 await context.SaveChangesAsync();
@@ -389,6 +391,8 @@ namespace ServiceAPI
         {
             using (var context = new UsersDbContext())
             {
+                Guid id = new Guid();
+                vehicle.Id = id;
                 context.Vehicles.Add(vehicle);
 
                 await context.SaveChangesAsync();

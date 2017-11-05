@@ -2,7 +2,10 @@
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
+
 }
+
+
 
     #vehicles td, #vehicles th {
         border: 1px solid #ddd;
