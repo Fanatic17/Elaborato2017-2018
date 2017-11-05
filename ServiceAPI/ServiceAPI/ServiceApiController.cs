@@ -387,7 +387,7 @@ namespace ServiceAPI
 
 
         [HttpPut("vehicles")]
-        public async Task<IActionResult> CreateVehicle([FromBody]Vehicle vehicle)
+        public async Task<IActionResult> CreateVehicle(Vehicle vehicle)
         {
             using (var context = new UsersDbContext())
             {

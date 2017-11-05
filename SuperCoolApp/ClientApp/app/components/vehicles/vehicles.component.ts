@@ -10,11 +10,13 @@ import 'rxjs/add/observable/forkJoin';
 })
 export class VehiclesComponent {
     public vehicles: Vehicle[];
-    public selectedVehicle: Vehicle | undefined;
+    public selectedVehicle: Vehicle;
 
     constructor(private http: Http, @Inject('BASE_URL') private baseUrl: string) {
         this.refreshData();
     }
+
+
 
     async refreshData() {
         this.http.get(this.baseUrl + 'api/vehicles').subscribe(result => {
@@ -44,7 +46,7 @@ export class VehiclesComponent {
 
     selectVehicle(): void {
 
-        this.selectedVehicle = undefined;
+       // this.selectedVehicle = undefined;
 
         for (let car of this.vehicles) {
             if (car.deleted == false) {
@@ -113,6 +115,7 @@ export class VehiclesComponent {
     async saveChanges(): Promise<void> {
         await this.putData();
         console.log("update completed");
+        console.log(this.selectedVehicle.toJSON());
         //await this.refreshData();
     }
 
@@ -132,6 +135,12 @@ class Vehicle {
     private _price: string = "";
     public hasChanges: boolean;
     public deleted: boolean = false;
+
+
+    //constructor() {
+    //    this.brand = "brand";
+    //    this.model = "model";
+    //}
 
     get brand(): string {
         return this._brand;
@@ -174,11 +183,11 @@ class Vehicle {
 
     public toJSON() {
         return {
-            id: this.id,
-            brand: this._brand,
-            model: this._model,
-			plate: this._plate,
-			price: this._price,
+           "id": "this.id",
+           "model": "this.model",
+           "brand": "this.brand",
+           "plate": "this.plate",
+           "price": "this.price",
         };
     };
 }
