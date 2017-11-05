@@ -70,7 +70,7 @@ namespace SuperCoolApp.Controllers
                 //copy original headers
                 foreach(var header in Request.Headers)
                 {
-                    request.Headers.Add(header.Key, header.Value.ToArray());
+                    request.Headers.TryAddWithoutValidation(header.Key, header.Value.ToArray());
                 }
 
                 //copy content

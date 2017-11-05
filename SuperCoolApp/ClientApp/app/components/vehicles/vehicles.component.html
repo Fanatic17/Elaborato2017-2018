@@ -1,24 +1,67 @@
-<h1>Vehicles List</h1>
+<h1>
+  Vehicles List <button (click)="addNewVehicle()"> + </button>
+</h1>
 
-<p *ngIf="!vehicles"><em>Loading...</em></p>
+<p *ngIf="!vehicles">
+  <em>Loading vehicles...</em>
+</p>
 
-<table id="vehicles" class='table' *ngIf="vehicles">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>Brand</th>
-            <th>Model</th> 
-            <th>Plate</th>
-            <th>Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let vehicle of vehicles">
-            <td>{{ vehicle.id }}</td>
-            <td>{{ vehicle.brand }}</td>
-            <td>{{ vehicle.model }}</td>
-            <td>{{ vehicle.plate }}</td>
-            <td>{{ vehicle.price }}</td>
-        </tr>
-    </tbody>
-</table>
+<!--
+<table class='table' *ngIf="vehicles">
+  <thead>
+    <tr>
+      <th>Id</th>
+      <th>Brand</th>
+      <th>Model</th>
+      <th>Plate</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let vehicle of vehicles">
+      <td>{{ vehicle.id }}</td>
+      <td>{{ vehicle.brand }}</td>
+      <td>{{ vehicle.model }}</td>
+      <td>{{ vehicle.plate }}</td>
+      <td>{{ vehicle.price }}</td>
+    </tr>
+  </tbody>
+  <br>    
+    </table>
+-->
+
+<div class="vehicle-home">
+  <div class="vehicles-list" *ngIf="vehicles">
+    <div *ngFor="let vehicle of vehicles"
+         class.selected=""
+         click=""
+          hidden=""
+             >
+      <span class="badge">{{vehicle.id || '-' }}</span> {{vehicle.model}} <span>{{vehicle.hasChanges?'*':''}}</span><span class="badge" style="float: right;" (click="")="delete(vehicle)">Delete</span>
+    </div>
+  </div>
+  <div *ngIf="selectedVehicle" class="vehicle-detail">
+    <h2 *ngIf="selectedVehicle.id > 0">{{selectedVehicle.model}} ({{selectedVehicle.id}})</h2>
+    <h2 *ngIf="!selectedVehicle.id">New Vehicle</h2>
+    <div>
+      <label>Brand: </label>
+      <input [(ngModel="")]="selectedVehicle.brand" placeholder="brand" />
+    </div>
+    <div>
+      <label>Model: </label>
+      <input [(ngModel="")]="selectedVehicle.model" placeholder="model" />
+    </div>
+    <div>
+      <label>Plate: </label>
+      <input [(ngModel="")]="selectedVehicle.plate" placeholder="plate" />
+    </div>
+    <div>
+      <label>Price: </label>
+      <input [(ngModel="")]="selectedVehicle.price" placeholder="price" />
+    </div>
+  </div>
+</div>
+
+<div id="floating-button" onclick="saveChanges()">
+  <span>SAVE</span>
+</div>
